@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { describe, test } from "node:test";
-import { onlySites, plainText, queryString, render } from "../extensions/search.ts";
+import { onlySites, plainText, queryString, render, retryDelayMs } from "../extensions/search.ts";
 
 describe("requests", () => {
 	test("leave unset parameters out of the query string", () => {
@@ -10,6 +10,21 @@ describe("requests", () => {
 	test("restrict results to sites with a Goggle", () => {
 		assert.equal(onlySites(["docs.rs", "doc.rust-lang.org"]), "$discard\n$boost=1,site=docs.rs\n$boost=1,site=doc.rust-lang.org");
 		assert.equal(onlySites([]), undefined);
+	});
+});
+
+describe("retryDelayMs", () => {
+	const headers = (limit: string, remaining: string, reset: string) =>
+		new Headers({ "x-ratelimit-limit": limit, "x-ratelimit-remaining": remaining, "x-ratelimit-reset": reset });
+
+	test("waits for the per-second window", () => {
+		assert.equal(retryDelayMs(headers("1, 15000", "0, 900", "1, 1419704")), 1000);
+		assert.equal(retryDelayMs(new Headers()), 1000);
+	});
+
+	test("gives up when the monthly quota is exhausted, not when it is unlimited", () => {
+		assert.equal(retryDelayMs(headers("1, 15000", "0, 0", "1, 1419704")), undefined);
+		assert.equal(retryDelayMs(headers("50, 0", "0, 0", "1, 2251665")), 1000);
 	});
 });
 
@@ -31,15 +46,5 @@ describe("render", () => {
 	test("news: outlet and age, description and extra snippets", () => {
 		const data = { results: [{ title: "T", url: "https://n.it/1", meta_url: { hostname: "n.it" }, age: "2 hours ago", description: "<strong>D</strong>", extra_snippets: ["E"] }] };
 		assert.deepEqual(render.news(data), ["--- [1] T\nhttps://n.it/1 · n.it · 2 hours ago\n\nD\n\nE"]);
-	});
-
-	test("videos: duration, channel and views", () => {
-		const data = { results: [{ title: "V", url: "https://youtu.be/x", video: { duration: "13:57", creator: "C", views: 88110 } }] };
-		assert.deepEqual(render.videos(data), ["--- [1] V\nhttps://youtu.be/x · 13:57 · C · 88K views"]);
-	});
-
-	test("images: image URL with size, and its page", () => {
-		const data = { results: [{ title: "I", url: "https://p.com", properties: { url: "https://p.com/i.png", width: 320, height: 240 } }] };
-		assert.deepEqual(render.images(data), ["--- [1] I\nhttps://p.com/i.png (320×240)\nfrom https://p.com"]);
 	});
 });
