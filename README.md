@@ -19,7 +19,7 @@ Queries accept Brave's [search operators](https://api-dashboard.search.brave.com
 
 | Name | Description |
 |---|---|
-| `query` | Search query |
+| `query` | Search query, up to 75 words (600 characters) |
 | `type` | `web` or `news`. Default: `web` |
 | `tokens` | `web` only: size of the result, 1024–32768. Default: 4096 |
 | `count` | Maximum number of results. Default: 20 for `web`, 10 for `news` |

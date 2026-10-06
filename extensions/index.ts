@@ -6,14 +6,15 @@ import { SEARCH_TYPES, type SearchType, search } from "./search.ts";
 const parameters = Type.Object({
 	query: Type.String({
 		description:
-			'A precise question or keywords. Include versions, error messages and names verbatim. Operators: "exact phrase", -exclude, site:example.com, filetype:pdf, intitle:word, lang:it, OR.',
+			'A precise question or keywords, up to 75 words. Include versions, error messages and names verbatim. Operators: "exact phrase", -exclude, site:example.com, filetype:pdf, intitle:word, lang:it, OR.',
+		maxLength: 600,
 	}),
 	type: Type.Optional(StringEnum(SEARCH_TYPES, { description: "web (default): passages from web pages; news: recent articles from news outlets" })),
 	tokens: Type.Optional(
 		Type.Integer({
 			minimum: 1024,
 			maximum: 32768,
-			description: "web only: approximate size of the result. 1024 for a quick fact, 4096 (default) for most questions, 8192-16384 for in-depth research",
+			description: "web only: approximate size of the result. 2048 for a quick fact, 4096 (default) for most questions, 8192-16384 for in-depth research",
 		}),
 	),
 	count: Type.Optional(Type.Integer({ minimum: 1, maximum: 50, description: "Maximum number of sources or results (default: 20 for web, 10 for news)" })),
