@@ -36,10 +36,14 @@ export default function braveSearch(pi: ExtensionAPI) {
 			"Search the web with Brave.",
 			"type 'web' (default) returns, for each source, the passages most relevant to the query, already extracted from the page (text, code, tables): usually enough to answer without opening any page.",
 			"type 'news' returns recent articles from news outlets.",
-			"To read a whole page or a video transcript, fetch its URL.",
+			"Each result comes with its URL and publication date, to cite it or to read the whole page or a video transcript by fetching its URL.",
+			"Results default to the US and English: set country and language for topics tied to a country or language.",
 		].join(" "),
 		promptSnippet: "Search the web with Brave: relevant passages from many sources in one call, or recent news",
-		promptGuidelines: ["Use brave_search when the answer depends on information that may be newer than your training data, or that you are not sure about."],
+		promptGuidelines: [
+			"Use brave_search when the answer depends on information that may be newer than your training data, or that you are not sure about.",
+			"When a search concerns a country or a language other than the US and English (the user's, or the topic's), set its country and language parameters.",
+		],
 		parameters,
 		annotations: { readOnlyHint: true, openWorldHint: true },
 
