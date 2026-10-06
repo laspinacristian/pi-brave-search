@@ -1,7 +1,7 @@
 {
   "name": "pi-brave-search",
-  "version": "1.1.0",
-  "description": "Pi coding agent extension: a brave_search tool that returns the passages most relevant to a query (Brave LLM Context API), plus news, videos and images.",
+  "version": "1.1.1",
+  "description": "Pi coding agent extension: a brave_search tool that returns the passages most relevant to a query (Brave LLM Context API), or recent news.",
   "type": "module",
   "license": "MIT",
   "author": "Cristian La Spina",
