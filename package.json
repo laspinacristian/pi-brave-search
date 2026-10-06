@@ -1,6 +1,6 @@
 {
   "name": "pi-brave-search",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Pi coding agent extension: a brave_search tool that returns the passages most relevant to a query (Brave LLM Context API), or recent news.",
   "type": "module",
   "license": "MIT",
